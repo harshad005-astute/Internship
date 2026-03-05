@@ -1,0 +1,150 @@
+
+# Step 1: Import Required Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set style for graphs
+sns.set(style="whitegrid")
+
+# ================================
+# Step 2: Load Dataset
+# ================================
+matches = pd.read_csv("matches.csv")
+deliveries = pd.read_csv("deliveries.csv")
+
+print("Matches Dataset Preview:")
+print(matches.head())
+
+print("\nDeliveries Dataset Preview:")
+print(deliveries.head())
+
+
+# ================================
+# Step 3: Data Cleaning
+# ================================
+
+print("\nMissing Values in Matches Dataset:")
+print(matches.isnull().sum())
+
+# Fill missing winner values
+matches['winner'].fillna('No Result', inplace=True)
+
+
+# ================================
+# Step 4: Total Matches Won by Each Team
+# ================================
+
+team_wins = matches['winner'].value_counts()
+
+print("\nTotal Matches Won by Teams:")
+print(team_wins)
+
+
+# ================================
+# Step 5: Visualization – Most Successful Teams
+# ================================
+
+plt.figure(figsize=(10,6))
+team_wins.plot(kind='bar')
+plt.title("Most Successful IPL Teams")
+plt.xlabel("Teams")
+plt.ylabel("Number of Wins")
+plt.xticks(rotation=45)
+plt.show()
+
+
+# ================================
+# Step 6: Top 10 Run Scorers
+# ================================
+
+top_scorers = deliveries.groupby('batsman')['batsman_runs'].sum().sort_values(ascending=False).head(10)
+
+print("\nTop 10 Run Scorers in IPL:")
+print(top_scorers)
+
+
+# ================================
+# Step 7: Plot Top Run Scorers
+# ================================
+
+plt.figure(figsize=(10,6))
+top_scorers.plot(kind='bar')
+plt.title("Top 10 IPL Run Scorers")
+plt.xlabel("Player")
+plt.ylabel("Total Runs")
+plt.xticks(rotation=45)
+plt.show()
+
+
+# ================================
+# Step 8: Toss Impact Analysis
+# ================================
+
+toss_win_match = matches[matches['toss_winner'] == matches['winner']]
+toss_win_percentage = (len(toss_win_match) / len(matches)) * 100
+
+print("\nPercentage of Matches Won After Winning Toss:")
+print(round(toss_win_percentage,2), "%")
+
+
+# ================================
+# Step 9: Matches Played Per Season
+# ================================
+
+matches_per_season = matches['season'].value_counts().sort_index()
+
+print("\nMatches Played Each Season:")
+print(matches_per_season)
+
+plt.figure(figsize=(10,6))
+matches_per_season.plot(kind='line', marker='o')
+plt.title("Number of Matches Played Per IPL Season")
+plt.xlabel("Season")
+plt.ylabel("Matches")
+plt.show()
+
+
+# ================================
+# Step 10: Top 10 Wicket Takers
+# ================================
+
+dismissals = deliveries[deliveries['dismissal_kind'].notnull()]
+top_bowlers = dismissals['bowler'].value_counts().head(10)
+
+print("\nTop 10 Wicket Takers:")
+print(top_bowlers)
+
+plt.figure(figsize=(10,6))
+top_bowlers.plot(kind='bar')
+plt.title("Top 10 IPL Wicket Takers")
+plt.xlabel("Bowler")
+plt.ylabel("Total Wickets")
+plt.xticks(rotation=45)
+plt.show()
+
+
+# ================================
+# Step 11: Most Matches Played at Venues
+# ================================
+
+venue_matches = matches['venue'].value_counts().head(10)
+
+print("\nTop Venues by Number of Matches:")
+print(venue_matches)
+
+plt.figure(figsize=(10,6))
+venue_matches.plot(kind='bar')
+plt.title("Top 10 IPL Venues by Matches Hosted")
+plt.xlabel("Venue")
+plt.ylabel("Matches Hosted")
+plt.xticks(rotation=90)
+plt.show()
+
+
+# ================================
+# END OF PROJECT
+# ================================
+
+print("\nIPL Data Analysis Completed Successfully!")
